@@ -1,30 +1,31 @@
 import { loadAmnogData } from "@/lib/amnog";
+import type { FlatRow } from "@/types/amnog";
+import AmnogTable from "./components/AmnogTable";
 
 export default function Home() {
   const data = loadAmnogData();
 
+  const rows: FlatRow[] = data.verfahren.flatMap((v) =>
+    v.patientengruppen.map((p) => ({
+      pat_gr_id: p.pat_gr_id,
+      handelsname: v.handelsname,
+      wirkstoff_inn: p.wirkstoff_inn,
+      therapiegebiet: v.therapiegebiet,
+      zn_ausmass: p.zn_ausmass,
+      zn_wahrscheinlichkeit: p.zn_wahrscheinlichkeit,
+      datum_beschluss: p.datum_beschluss,
+    }))
+  );
+
   return (
-    <main className="min-h-screen bg-white p-16 font-sans">
-      <h1 className="text-2xl font-semibold text-zinc-900 mb-2">
+    <main className="min-h-screen bg-white px-8 py-10 font-sans">
+      <h1 className="text-2xl font-semibold text-zinc-900 mb-1">
         AMNOG Dashboard
       </h1>
       <p className="text-zinc-500 text-sm mb-8">
         Datenstand: {data.generated_at.slice(0, 10)} · Quelle: {data.source}
       </p>
-      <div className="flex gap-8">
-        <div className="rounded-xl border border-zinc-200 p-6 w-48">
-          <div className="text-3xl font-bold text-zinc-900">
-            {data.count_verfahren.toLocaleString("de-DE")}
-          </div>
-          <div className="text-sm text-zinc-500 mt-1">Verfahren</div>
-        </div>
-        <div className="rounded-xl border border-zinc-200 p-6 w-48">
-          <div className="text-3xl font-bold text-zinc-900">
-            {data.count_patientengruppen.toLocaleString("de-DE")}
-          </div>
-          <div className="text-sm text-zinc-500 mt-1">Patientengruppen</div>
-        </div>
-      </div>
+      <AmnogTable rows={rows} />
     </main>
   );
 }

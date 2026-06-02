@@ -53,3 +53,13 @@ export interface AmnogData {
   count_patientengruppen: number;
   verfahren: Verfahren[];
 }
+
+export interface FlatRow {
+  pat_gr_id: string;
+  handelsname: string | null;
+  wirkstoff_inn: string | null;
+  therapiegebiet: string | null;
+  zn_ausmass: string | null;
+  zn_wahrscheinlichkeit: string | null;
+  datum_beschluss: string | null;
+}
