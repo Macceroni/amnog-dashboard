@@ -1,6 +1,6 @@
 import { loadAmnogData } from "@/lib/amnog";
 import type { FlatRow } from "@/types/amnog";
-import AmnogTable from "./components/AmnogTable";
+import DashboardShell from "./components/DashboardShell";
 
 export default function Home() {
   const data = loadAmnogData();
@@ -10,10 +10,25 @@ export default function Home() {
       pat_gr_id: p.pat_gr_id,
       handelsname: v.handelsname,
       wirkstoff_inn: p.wirkstoff_inn,
+      wirkstoff_kombination: p.wirkstoff_kombination,
       therapiegebiet: v.therapiegebiet,
+      pharmazeutischer_unternehmer: v.pharmazeutischer_unternehmer,
+      orphan_drug: v.orphan_drug,
+      atmp: v.atmp,
+      reg_status: v.reg_status,
+      datum_beschluss: p.datum_beschluss,
+      datum_befristung_bis: p.datum_befristung_bis,
+      patientengruppe: p.patientengruppe,
+      awg_kurz: p.awg_kurz,
+      icd_codes: p.icd_codes,
+      atc_codes: p.atc_codes,
+      pzn: p.pzn,
+      zvt_best: p.zvt_best,
       zn_ausmass: p.zn_ausmass,
       zn_wahrscheinlichkeit: p.zn_wahrscheinlichkeit,
-      datum_beschluss: p.datum_beschluss,
+      zn_text: p.zn_text,
+      endpunkte: p.endpunkte,
+      quelle_url: p.quelle_url,
     }))
   );
 
@@ -25,7 +40,7 @@ export default function Home() {
       <p className="text-zinc-500 text-sm mb-8">
         Datenstand: {data.generated_at.slice(0, 10)} · Quelle: {data.source}
       </p>
-      <AmnogTable rows={rows} />
+      <DashboardShell rows={rows} />
     </main>
   );
 }

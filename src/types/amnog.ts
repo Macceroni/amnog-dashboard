@@ -58,8 +58,28 @@ export interface FlatRow {
   pat_gr_id: string;
   handelsname: string | null;
   wirkstoff_inn: string | null;
+  wirkstoff_kombination: string | null;
   therapiegebiet: string | null;
+  pharmazeutischer_unternehmer: string | null;
+  orphan_drug: boolean;
+  atmp: boolean;
+  reg_status: string | null;
+  datum_beschluss: string | null;
+  datum_befristung_bis: string | null;
+  patientengruppe: string | null;
+  awg_kurz: string | null;
+  icd_codes: IcdCode[];
+  atc_codes: string[];
+  pzn: string[];
+  zvt_best: string | null;
   zn_ausmass: string | null;
   zn_wahrscheinlichkeit: string | null;
-  datum_beschluss: string | null;
+  zn_text: string | null;
+  endpunkte: {
+    mortalitaet: Endpunkt | null;
+    morbiditaet: Endpunkt | null;
+    lebensqualitaet: Endpunkt | null;
+    ue: Endpunkt | null;
+  };
+  quelle_url: string | null;
 }

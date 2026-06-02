@@ -2,8 +2,9 @@
 
 import { useState, useMemo, useRef, useEffect } from "react";
 import type { FlatRow } from "@/types/amnog";
+import DetailPanel from "./DetailPanel";
 
-type SortKey = keyof FlatRow;
+type SortKey = "handelsname" | "wirkstoff_inn" | "therapiegebiet" | "zn_ausmass" | "zn_wahrscheinlichkeit" | "datum_beschluss";
 type SortDir = "asc" | "desc";
 
 function display(value: string | null): string {
@@ -117,12 +118,26 @@ function MultiSelectFilter({
   );
 }
 
-export default function AmnogTable({ rows }: { rows: FlatRow[] }) {
-  const [search, setSearch] = useState("");
+export default function AmnogTable({
+  rows,
+  search,
+  setSearch,
+  selectedGebiete,
+  setSelectedGebiete,
+  selectedAusmass,
+  setSelectedAusmass,
+}: {
+  rows: FlatRow[];
+  search: string;
+  setSearch: (v: string) => void;
+  selectedGebiete: Set<string>;
+  setSelectedGebiete: (next: Set<string>) => void;
+  selectedAusmass: Set<string>;
+  setSelectedAusmass: (next: Set<string>) => void;
+}) {
   const [sortKey, setSortKey] = useState<SortKey>("datum_beschluss");
   const [sortDir, setSortDir] = useState<SortDir>("desc");
-  const [selectedGebiete, setSelectedGebiete] = useState<Set<string>>(new Set());
-  const [selectedAusmass, setSelectedAusmass] = useState<Set<string>>(new Set());
+  const [activeRow, setActiveRow] = useState<FlatRow | null>(null);
 
   const therapiegebiete = useMemo(() => {
     const vals = new Set<string>();
@@ -183,6 +198,9 @@ export default function AmnogTable({ rows }: { rows: FlatRow[] }) {
 
   return (
     <div>
+      {activeRow && (
+        <DetailPanel row={activeRow} onClose={() => setActiveRow(null)} />
+      )}
       <div className="flex flex-wrap items-center gap-3 mb-4">
         <input
           type="search"
@@ -236,7 +254,8 @@ export default function AmnogTable({ rows }: { rows: FlatRow[] }) {
             {sorted.map((row) => (
               <tr
                 key={row.pat_gr_id}
-                className="border-b border-zinc-100 hover:bg-zinc-50"
+                onClick={() => setActiveRow(row)}
+                className="border-b border-zinc-100 hover:bg-zinc-50 cursor-pointer"
               >
                 <td className="px-4 py-2 font-medium text-zinc-900">{display(row.handelsname)}</td>
                 <td className="px-4 py-2 text-zinc-700">{display(row.wirkstoff_inn)}</td>
