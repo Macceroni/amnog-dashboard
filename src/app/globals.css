@@ -24,3 +24,45 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+/* Dual-Range-Slider: beide input[type=range] überlagert, nur Thumbs klickbar */
+.range-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  background: transparent;
+  pointer-events: none;
+  outline: none;
+  margin: 0;
+}
+
+.range-thumb::-webkit-slider-runnable-track {
+  background: transparent;
+}
+
+.range-thumb::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: white;
+  border: 2px solid #52525b;
+  cursor: pointer;
+  pointer-events: all;
+}
+
+.range-thumb::-moz-range-track {
+  background: transparent;
+  border: none;
+}
+
+.range-thumb::-moz-range-thumb {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: white;
+  border: 2px solid #52525b;
+  cursor: pointer;
+  pointer-events: all;
+  box-sizing: border-box;
+}

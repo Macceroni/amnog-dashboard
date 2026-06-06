@@ -120,6 +120,62 @@ function MultiSelectFilter({
   );
 }
 
+function RangeSlider({
+  min,
+  max,
+  value,
+  onChange,
+}: {
+  min: number;
+  max: number;
+  value: [number, number];
+  onChange: (v: [number, number]) => void;
+}) {
+  const [from, to] = value;
+  const range = max - min || 1;
+  const fromPct = ((from - min) / range) * 100;
+  const toPct = ((to - min) / range) * 100;
+
+  return (
+    <div className="flex items-center gap-2">
+      <span className="text-xs text-zinc-500 shrink-0">Jahr</span>
+      <span className="text-xs text-zinc-700 font-medium tabular-nums w-8 text-right">{from}</span>
+      <div className="relative w-36 h-5 shrink-0">
+        {/* Track Hintergrund */}
+        <div className="absolute top-1/2 -translate-y-1/2 w-full h-[2px] bg-zinc-200 rounded-full pointer-events-none" />
+        {/* Aktiver Bereich zwischen den Griffen */}
+        <div
+          className="absolute top-1/2 -translate-y-1/2 h-[2px] bg-zinc-500 rounded-full pointer-events-none"
+          style={{ left: `${fromPct}%`, width: `${toPct - fromPct}%` }}
+        />
+        {/* Unterer Griff (von) */}
+        <input
+          type="range"
+          min={min}
+          max={max}
+          step={1}
+          value={from}
+          onChange={(e) => onChange([Math.min(+e.target.value, to), to])}
+          className="range-thumb absolute inset-0 w-full h-full"
+          style={{ zIndex: from >= to ? 5 : 3 }}
+        />
+        {/* Oberer Griff (bis) */}
+        <input
+          type="range"
+          min={min}
+          max={max}
+          step={1}
+          value={to}
+          onChange={(e) => onChange([from, Math.max(+e.target.value, from)])}
+          className="range-thumb absolute inset-0 w-full h-full"
+          style={{ zIndex: 4 }}
+        />
+      </div>
+      <span className="text-xs text-zinc-700 font-medium tabular-nums w-8">{to}</span>
+    </div>
+  );
+}
+
 export default function AmnogTable({
   rows,
   search,
@@ -128,6 +184,10 @@ export default function AmnogTable({
   setSelectedGebiete,
   selectedAusmass,
   setSelectedAusmass,
+  yearRange,
+  setYearRange,
+  minYear,
+  maxYear,
 }: {
   rows: FlatRow[];
   search: string;
@@ -136,6 +196,10 @@ export default function AmnogTable({
   setSelectedGebiete: (next: Set<string>) => void;
   selectedAusmass: Set<string>;
   setSelectedAusmass: (next: Set<string>) => void;
+  yearRange: [number, number];
+  setYearRange: (v: [number, number]) => void;
+  minYear: number;
+  maxYear: number;
 }) {
   const [sortKey, setSortKey] = useState<SortKey>("datum_beschluss");
   const [sortDir, setSortDir] = useState<SortDir>("desc");
@@ -181,12 +245,15 @@ export default function AmnogTable({
     );
   }, [filtered, sortKey, sortDir]);
 
-  const hasActiveFilters = search.trim() !== "" || selectedGebiete.size > 0 || selectedAusmass.size > 0;
+  const isFullRange = yearRange[0] === minYear && yearRange[1] === maxYear;
+  const hasActiveFilters =
+    search.trim() !== "" || selectedGebiete.size > 0 || selectedAusmass.size > 0 || !isFullRange;
 
   function resetAll() {
     setSearch("");
     setSelectedGebiete(new Set());
     setSelectedAusmass(new Set());
+    setYearRange([minYear, maxYear]);
   }
 
   function handleSort(key: SortKey) {
@@ -227,6 +294,12 @@ export default function AmnogTable({
           options={ausmassStufen}
           selected={selectedAusmass}
           onChange={setSelectedAusmass}
+        />
+        <RangeSlider
+          min={minYear}
+          max={maxYear}
+          value={yearRange}
+          onChange={setYearRange}
         />
         {hasActiveFilters && (
           <button
