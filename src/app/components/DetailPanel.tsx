@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import type { FlatRow } from "@/types/amnog";
 import { AUSMASS_BADGE } from "@/lib/colors";
 
@@ -20,12 +20,57 @@ function ausmassClass(ausmass: string | null): string {
   return AUSMASS_BADGE[ausmass] ?? "bg-zinc-100 text-zinc-700";
 }
 
+const REG_STATUS_LABEL: Record<string, string> = {
+  Beschluss_reg: "Reguläre Bewertung",
+  Beschluss_orph: "Orphan Drug",
+  Beschluss_antib: "Reserveantibiotikum",
+};
+
+const AUSMASS_TOOLTIP: Record<string, string> = {
+  "Gilt als belegt (Orphan)":
+    "Orphan Drugs gelten nach §35a SGB V als mit Zusatznutzen belegt, solange der GKV-Umsatz 30 Mio. € pro Jahr nicht übersteigt.",
+  "Gilt als belegt (Antibiotikum)":
+    "Reserveantibiotika gelten nach §35a SGB V als mit Zusatznutzen belegt (Sonderweg für Reserveantibiotika).",
+};
+
 const ENDPUNKT_LABELS: [keyof FlatRow["endpunkte"], string][] = [
   ["mortalitaet", "Mortalität"],
   ["morbiditaet", "Morbidität"],
   ["lebensqualitaet", "Lebensqualität"],
   ["ue", "Nebenwirkungen (UE)"],
 ];
+
+const ZVT_COLLAPSE_THRESHOLD = 300;
+
+function ZvtText({ text }: { text: string }) {
+  const [expanded, setExpanded] = useState(false);
+
+  if (text.length <= ZVT_COLLAPSE_THRESHOLD) {
+    return <p className="text-zinc-700 whitespace-pre-line leading-relaxed">{text}</p>;
+  }
+
+  const lines = text.split("\n");
+  const preview = lines.slice(0, 3).join("\n");
+  const optionCount = lines.filter((l) => l.startsWith("- ")).length;
+  const expandLabel =
+    optionCount >= 2 ? `Alle ${optionCount} Optionen anzeigen` : "Vollständigen Text anzeigen";
+
+  return (
+    <div>
+      {expanded ? (
+        <p className="text-zinc-700 whitespace-pre-line leading-relaxed">{text}</p>
+      ) : (
+        <p className="text-zinc-700 whitespace-pre-line leading-relaxed">{preview}…</p>
+      )}
+      <button
+        onClick={() => setExpanded((e) => !e)}
+        className="mt-1 text-xs text-blue-600 hover:underline"
+      >
+        {expanded ? "Weniger anzeigen" : expandLabel}
+      </button>
+    </div>
+  );
+}
 
 export default function DetailPanel({
   row,
@@ -41,6 +86,10 @@ export default function DetailPanel({
     document.addEventListener("keydown", onKey);
     return () => document.removeEventListener("keydown", onKey);
   }, [onClose]);
+
+  const regLabel = row.reg_status
+    ? (REG_STATUS_LABEL[row.reg_status] ?? row.reg_status)
+    : null;
 
   return (
     <div className="fixed inset-0 z-50 flex">
@@ -63,6 +112,7 @@ export default function DetailPanel({
               {val(row.wirkstoff_inn)}
               {row.wirkstoff_kombination ? ` / ${row.wirkstoff_kombination}` : ""}
             </p>
+            <p className="text-xs font-mono text-zinc-400 mt-1">{row.id_be_akz}</p>
           </div>
           <button
             onClick={onClose}
@@ -86,9 +136,9 @@ export default function DetailPanel({
                 ATMP
               </span>
             )}
-            {row.reg_status && (
+            {regLabel && (
               <span className="px-2 py-0.5 rounded-full text-xs font-medium bg-zinc-100 text-zinc-700">
-                {row.reg_status}
+                {regLabel}
               </span>
             )}
           </div>
@@ -99,7 +149,10 @@ export default function DetailPanel({
               Zusatznutzen
             </h3>
             <div className="flex flex-wrap gap-2 mb-2">
-              <span className={`px-2.5 py-1 rounded-md font-medium text-xs ${ausmassClass(row.zn_ausmass)}`}>
+              <span
+                className={`px-2.5 py-1 rounded-md font-medium text-xs ${ausmassClass(row.zn_ausmass)}`}
+                title={AUSMASS_TOOLTIP[row.zn_ausmass ?? ""] ?? undefined}
+              >
                 Ausmaß: {val(row.zn_ausmass)}
               </span>
               <span className="px-2.5 py-1 rounded-md font-medium text-xs bg-zinc-100 text-zinc-700">
@@ -146,7 +199,13 @@ export default function DetailPanel({
             <dl className="space-y-1.5">
               <Row label="Patientengruppe" value={val(row.patientengruppe)} />
               <Row label="Anwendungsgebiet" value={val(row.awg_kurz)} />
-              <Row label="ZVT" value={val(row.zvt_best)} />
+              <Row label="Indikation (präzise)" value={val(row.therapeutisches_gebiet_text)} />
+              <div className="flex gap-2">
+                <dt className="text-zinc-500 w-36 shrink-0">ZVT</dt>
+                <dd className="text-zinc-700 flex-1">
+                  {row.zvt_best ? <ZvtText text={row.zvt_best} /> : "—"}
+                </dd>
+              </div>
             </dl>
           </section>
 

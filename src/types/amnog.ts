@@ -38,6 +38,7 @@ export interface Verfahren {
   url: string;
   handelsname: string | null;
   pharmazeutischer_unternehmer: string | null;
+  therapeutisches_gebiet_text: string | null;
   therapiegebiet: string | null;
   orphan_drug: boolean;
   atmp: boolean;
@@ -56,9 +57,11 @@ export interface AmnogData {
 
 export interface FlatRow {
   pat_gr_id: string;
+  id_be_akz: string;
   handelsname: string | null;
   wirkstoff_inn: string | null;
   wirkstoff_kombination: string | null;
+  therapeutisches_gebiet_text: string | null;
   therapiegebiet: string | null;
   pharmazeutischer_unternehmer: string | null;
   orphan_drug: boolean;

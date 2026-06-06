@@ -8,9 +8,11 @@ export default function Home() {
   const rows: FlatRow[] = data.verfahren.flatMap((v) =>
     v.patientengruppen.map((p) => ({
       pat_gr_id: p.pat_gr_id,
+      id_be_akz: v.id_be_akz,
       handelsname: v.handelsname,
       wirkstoff_inn: p.wirkstoff_inn,
       wirkstoff_kombination: p.wirkstoff_kombination,
+      therapeutisches_gebiet_text: v.therapeutisches_gebiet_text,
       therapiegebiet: v.therapiegebiet,
       pharmazeutischer_unternehmer: v.pharmazeutischer_unternehmer,
       orphan_drug: v.orphan_drug,
