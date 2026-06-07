@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import type { FlatRow } from "@/types/amnog";
 import { AUSMASS_BADGE } from "@/lib/colors";
-import { cleanPU } from "@/lib/format";
+import { displayPU } from "@/lib/format";
 
 function val(v: string | null): string {
   return v === null ? "—" : v;
@@ -113,7 +113,7 @@ export default function DetailPanel({
               {val(row.wirkstoff_inn)}
               {row.wirkstoff_kombination ? ` / ${row.wirkstoff_kombination}` : ""}
             </p>
-            <p className="text-sm text-zinc-400 mt-0.5">{cleanPU(row.pharmazeutischer_unternehmer)}</p>
+            <p className="text-sm text-zinc-400 mt-0.5">{displayPU(row.pharmazeutischer_unternehmer)}</p>
             <p className="text-xs font-mono text-zinc-400 mt-1">{row.id_be_akz}</p>
           </div>
           <button
@@ -250,7 +250,7 @@ export default function DetailPanel({
               Verfahren
             </h3>
             <dl className="space-y-1.5">
-              <Row label="Unternehmen" value={cleanPU(row.pharmazeutischer_unternehmer)} />
+              <Row label="Unternehmen" value={displayPU(row.pharmazeutischer_unternehmer)} />
               <Row label="Therapiegebiet" value={val(row.therapiegebiet)} />
               <Row label="Beschlussdatum" value={formatDate(row.datum_beschluss)} />
               <Row

@@ -2,7 +2,7 @@
 
 import { useState, useMemo, useRef, useEffect } from "react";
 import type { FlatRow } from "@/types/amnog";
-import { cleanPU } from "@/lib/format";
+import { displayPU } from "@/lib/format";
 import DetailPanel from "./DetailPanel";
 
 type SortKey = "handelsname" | "wirkstoff_inn" | "pharmazeutischer_unternehmer" | "therapiegebiet" | "zn_ausmass" | "zn_wahrscheinlichkeit" | "datum_beschluss";
@@ -339,7 +339,7 @@ export default function AmnogTable({
               >
                 <td className="px-4 py-2 font-medium text-zinc-900">{display(row.handelsname)}</td>
                 <td className="px-4 py-2 text-zinc-700">{display(row.wirkstoff_inn)}</td>
-                <td className="px-4 py-2 text-zinc-700">{cleanPU(row.pharmazeutischer_unternehmer)}</td>
+                <td className="px-4 py-2 text-zinc-700">{displayPU(row.pharmazeutischer_unternehmer)}</td>
                 <td className="px-4 py-2 text-zinc-700">{display(row.therapiegebiet)}</td>
                 <td className="px-4 py-2 text-zinc-700">{display(row.zn_ausmass)}</td>
                 <td className="px-4 py-2 text-zinc-700">{display(row.zn_wahrscheinlichkeit)}</td>
