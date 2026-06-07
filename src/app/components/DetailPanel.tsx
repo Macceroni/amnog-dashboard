@@ -198,15 +198,15 @@ export default function DetailPanel({
             </table>
           </section>
 
-          {/* Patientengruppe & Indikation */}
+          {/* Patientengruppe & Therapeutisches Gebiet */}
           <section>
             <h3 className="text-xs font-semibold uppercase tracking-wide text-zinc-400 mb-2">
-              Patientengruppe & Indikation
+              Patientengruppe & Therapeutisches Gebiet
             </h3>
             <dl className="space-y-1.5">
               <Row label="Patientengruppe" value={val(row.patientengruppe)} />
               <Row label="Anwendungsgebiet" value={val(row.awg_kurz)} />
-              <Row label="Indikation (präzise)" value={val(row.therapeutisches_gebiet_text)} />
+              <Row label="Therapeutisches Gebiet" value={val(row.therapeutisches_gebiet_text)} />
               <div className="flex gap-2">
                 <dt className="text-zinc-500 w-36 shrink-0">ZVT</dt>
                 <dd className="text-zinc-700 flex-1">

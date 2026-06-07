@@ -36,9 +36,9 @@ function compareValues(a: string | null, b: string | null, dir: SortDir, isDate 
 const COLUMNS: { key: SortKey; label: string; isDate?: boolean }[] = [
   { key: "handelsname", label: "Handelsname" },
   { key: "wirkstoff_inn", label: "Wirkstoff" },
-  { key: "patientengruppe", label: "Indikation" },
   { key: "pharmazeutischer_unternehmer", label: "Unternehmen" },
   { key: "therapiegebiet", label: "Therapiegebiet" },
+  { key: "patientengruppe", label: "Patientengruppe" },
   { key: "zn_ausmass", label: "Ausmaß" },
   { key: "zn_wahrscheinlichkeit", label: "Wahrscheinlichkeit" },
   { key: "datum_beschluss", label: "Beschlussdatum", isDate: true },
@@ -341,6 +341,8 @@ export default function AmnogTable({
               >
                 <td className="px-4 py-2 font-medium text-zinc-900">{display(row.handelsname)}</td>
                 <td className="px-4 py-2 text-zinc-700">{display(row.wirkstoff_inn)}</td>
+                <td className="px-4 py-2 text-zinc-700">{displayPU(row.pharmazeutischer_unternehmer)}</td>
+                <td className="px-4 py-2 text-zinc-700">{display(row.therapiegebiet)}</td>
                 <td className="px-4 py-2 text-zinc-700 max-w-[14rem]">
                   <div
                     className="overflow-hidden whitespace-nowrap text-ellipsis"
@@ -349,13 +351,11 @@ export default function AmnogTable({
                     {row.patientengruppe ?? "—"}
                   </div>
                 </td>
-                <td className="px-4 py-2 text-zinc-700">{displayPU(row.pharmazeutischer_unternehmer)}</td>
-                <td className="px-4 py-2 text-zinc-700">{display(row.therapiegebiet)}</td>
                 <td className="px-4 py-2 text-zinc-700">{display(row.zn_ausmass)}</td>
                 <td className="px-4 py-2 text-zinc-700">{display(row.zn_wahrscheinlichkeit)}</td>
                 <td className="px-4 py-2 text-zinc-500 tabular-nums">{formatDate(row.datum_beschluss)}</td>
                 <td className="px-4 py-2 text-zinc-400 tabular-nums text-xs whitespace-nowrap">
-                  {row.pg_total > 1 ? `${row.pg_index} von ${row.pg_total}` : "—"}
+                  {`${row.pg_index} von ${row.pg_total}`}
                 </td>
               </tr>
             ))}
