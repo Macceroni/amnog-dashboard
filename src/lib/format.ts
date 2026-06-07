@@ -72,5 +72,5 @@ export function displayIndikation(tgt: string | null): string {
   const m = tgt.match(/^(.+?)\s*\([^)]+\)\s*$/);
   const before = m ? m[1].trim() : tgt.trim();
   if (!before) return "—";
-  return before.charAt(0).toUpperCase() + before.slice(1);
+  return before.replace(/^[a-zäöüß]/, c => c.toUpperCase());
 }
