@@ -9,6 +9,7 @@ export default function DashboardShell({ rows }: { rows: FlatRow[] }) {
   const [search, setSearch] = useState("");
   const [selectedGebiete, setSelectedGebiete] = useState<Set<string>>(new Set());
   const [selectedAusmass, setSelectedAusmass] = useState<Set<string>>(new Set());
+  const [orphanFilter, setOrphanFilter] = useState<"all" | "only" | "without">("all");
 
   const { minYear, maxYear } = useMemo(() => {
     let min = Infinity;
@@ -37,17 +38,23 @@ export default function DashboardShell({ rows }: { rows: FlatRow[] }) {
     });
   }, [rows, yearRange, minYear, maxYear]);
 
+  const filtered = useMemo(() => {
+    if (orphanFilter === "only") return yearFiltered.filter((r) => r.orphan_drug === true);
+    if (orphanFilter === "without") return yearFiltered.filter((r) => r.orphan_drug === false);
+    return yearFiltered;
+  }, [yearFiltered, orphanFilter]);
+
   return (
     <>
       <Charts
-        rows={yearFiltered}
+        rows={filtered}
         selectedGebiete={selectedGebiete}
         selectedAusmass={selectedAusmass}
         onGebieteChange={setSelectedGebiete}
         onAusmassChange={setSelectedAusmass}
       />
       <AmnogTable
-        rows={yearFiltered}
+        rows={filtered}
         search={search}
         setSearch={setSearch}
         selectedGebiete={selectedGebiete}
@@ -58,6 +65,8 @@ export default function DashboardShell({ rows }: { rows: FlatRow[] }) {
         setYearRange={setYearRange}
         minYear={minYear}
         maxYear={maxYear}
+        orphanFilter={orphanFilter}
+        setOrphanFilter={setOrphanFilter}
       />
     </>
   );

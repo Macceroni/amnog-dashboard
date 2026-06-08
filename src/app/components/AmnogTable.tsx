@@ -50,11 +50,13 @@ function MultiSelectFilter({
   options,
   selected,
   onChange,
+  optionLabel,
 }: {
   label: string;
   options: string[];
   selected: Set<string>;
   onChange: (next: Set<string>) => void;
+  optionLabel?: (opt: string) => string;
 }) {
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
@@ -79,11 +81,12 @@ function MultiSelectFilter({
     onChange(next);
   }
 
+  const fmt = optionLabel ?? ((v: string) => v);
   const buttonLabel =
     selected.size === 0
       ? label
       : selected.size === 1
-      ? [...selected][0]
+      ? fmt([...selected][0])
       : `${label} (${selected.size})`;
 
   return (
@@ -113,7 +116,7 @@ function MultiSelectFilter({
                 onChange={() => toggle(opt)}
                 className="accent-zinc-700"
               />
-              <span className="text-zinc-700">{opt}</span>
+              <span className="text-zinc-700">{fmt(opt)}</span>
             </label>
           ))}
         </div>
@@ -190,6 +193,8 @@ export default function AmnogTable({
   setYearRange,
   minYear,
   maxYear,
+  orphanFilter,
+  setOrphanFilter,
 }: {
   rows: FlatRow[];
   search: string;
@@ -202,6 +207,8 @@ export default function AmnogTable({
   setYearRange: (v: [number, number]) => void;
   minYear: number;
   maxYear: number;
+  orphanFilter: "all" | "only" | "without";
+  setOrphanFilter: (v: "all" | "only" | "without") => void;
 }) {
   const [sortKey, setSortKey] = useState<SortKey>("datum_beschluss");
   const [sortDir, setSortDir] = useState<SortDir>("desc");
@@ -209,7 +216,7 @@ export default function AmnogTable({
 
   const therapiegebiete = useMemo(() => {
     const vals = new Set<string>();
-    for (const r of rows) if (r.therapiegebiet) vals.add(capitalizeFirst(r.therapiegebiet));
+    for (const r of rows) if (r.therapiegebiet) vals.add(r.therapiegebiet);
     return [...vals].sort((a, b) => a.localeCompare(b, "de"));
   }, [rows]);
 
@@ -230,7 +237,7 @@ export default function AmnogTable({
       ) {
         return false;
       }
-      if (selectedGebiete.size > 0 && !selectedGebiete.has(capitalizeFirst(r.therapiegebiet))) {
+      if (selectedGebiete.size > 0 && !selectedGebiete.has(r.therapiegebiet ?? "")) {
         return false;
       }
       if (selectedAusmass.size > 0 && !selectedAusmass.has(r.zn_ausmass ?? "")) {
@@ -249,13 +256,14 @@ export default function AmnogTable({
 
   const isFullRange = yearRange[0] === minYear && yearRange[1] === maxYear;
   const hasActiveFilters =
-    search.trim() !== "" || selectedGebiete.size > 0 || selectedAusmass.size > 0 || !isFullRange;
+    search.trim() !== "" || selectedGebiete.size > 0 || selectedAusmass.size > 0 || !isFullRange || orphanFilter !== "all";
 
   function resetAll() {
     setSearch("");
     setSelectedGebiete(new Set());
     setSelectedAusmass(new Set());
     setYearRange([minYear, maxYear]);
+    setOrphanFilter("all");
   }
 
   function handleSort(key: SortKey) {
@@ -290,6 +298,7 @@ export default function AmnogTable({
           options={therapiegebiete}
           selected={selectedGebiete}
           onChange={setSelectedGebiete}
+          optionLabel={capitalizeFirst}
         />
         <MultiSelectFilter
           label="Ausmaß"
@@ -303,6 +312,27 @@ export default function AmnogTable({
           value={yearRange}
           onChange={setYearRange}
         />
+        <div className="flex border border-zinc-200 rounded-lg overflow-hidden text-sm">
+          {(["all", "only", "without"] as const).map((val, i) => {
+            const labels = { all: "Alle", only: "Nur Orphan", without: "Ohne Orphan" };
+            const active = orphanFilter === val;
+            return (
+              <button
+                key={val}
+                onClick={() => setOrphanFilter(val)}
+                className={`px-3 py-2 whitespace-nowrap focus:outline-none focus:ring-2 focus:ring-inset focus:ring-zinc-300 ${
+                  i > 0 ? "border-l border-zinc-200" : ""
+                } ${
+                  active
+                    ? "bg-zinc-800 text-white font-medium"
+                    : "bg-white text-zinc-600 hover:bg-zinc-50"
+                }`}
+              >
+                {labels[val]}
+              </button>
+            );
+          })}
+        </div>
         {hasActiveFilters && (
           <button
             onClick={resetAll}
