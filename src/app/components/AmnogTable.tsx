@@ -334,7 +334,21 @@ export default function AmnogTable({
             </tr>
           </thead>
           <tbody>
-            {sorted.map((row) => (
+            {sorted.length === 0 ? (
+              <tr>
+                <td colSpan={10} className="px-4 py-16 text-center">
+                  <p className="text-sm text-zinc-500 mb-3">
+                    Keine Verfahren für diese Filterkombination.
+                  </p>
+                  <button
+                    onClick={resetAll}
+                    className="text-sm text-zinc-600 underline hover:text-zinc-900"
+                  >
+                    Filter zurücksetzen
+                  </button>
+                </td>
+              </tr>
+            ) : sorted.map((row) => (
               <tr
                 key={row.pat_gr_id}
                 onClick={() => setActiveRow(row)}
