@@ -84,6 +84,50 @@ export default function Home() {
       </section>
 
       <DashboardShell rows={rows} />
+
+      <footer className="mt-12 border-t border-zinc-200 pt-8 pb-6 text-xs text-zinc-500 space-y-3">
+        <p>
+          <span className="font-semibold text-zinc-600">Keine medizinische Beratung.</span>{" "}
+          Dieses Dashboard dient der Datenrecherche und stellt keine medizinische oder
+          therapeutische Beratung dar.
+        </p>
+        <p>
+          <span className="font-semibold text-zinc-600">Nicht die Erstattungspreise.</span>{" "}
+          Gezeigt wird die gesetzliche frühe Nutzenbewertung nach §&nbsp;35a SGB V — nicht die
+          im Anschluss daran verhandelten Erstattungsbeträge.
+        </p>
+        <p>
+          <span className="font-semibold text-zinc-600">Inoffizielle Aufbereitung.</span>{" "}
+          Dieses Projekt hat keine Verbindung zum Gemeinsamen Bundesausschuss (G-BA). Maßgeblich
+          sind stets die Originalbeschlüsse auf{" "}
+          <a
+            href="https://www.g-ba.de"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="underline hover:text-zinc-700"
+          >
+            g-ba.de
+          </a>{" "}
+          — jede Tabellenzeile enthält einen Direktlink zur Quelle.
+        </p>
+        <p>
+          <span className="font-semibold text-zinc-600">Datenherkunft.</span>{" "}
+          Die Beschlussdaten sind amtliche Werke im Sinne von §&nbsp;5 UrhG und unterliegen
+          keinem Urheberrechtsschutz. Quelle: Gemeinsamer Bundesausschuss (G-BA). Datenstand:
+          6. Juni 2026. Kein automatisches Update.
+        </p>
+        <p>
+          Quellcode:{" "}
+          <a
+            href="https://github.com/macceroni/amnog-dashboard"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="underline hover:text-zinc-700"
+          >
+            github.com/macceroni/amnog-dashboard
+          </a>
+        </p>
+      </footer>
     </main>
   );
 }
