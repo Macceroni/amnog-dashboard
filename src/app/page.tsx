@@ -5,6 +5,8 @@ import DashboardShell from "./components/DashboardShell";
 export default function Home() {
   const data = loadAmnogData();
 
+  const dateStr = data.generated_at.slice(0, 10);
+
   const rows: FlatRow[] = data.verfahren.flatMap((v) =>
     v.patientengruppen.map((p, idx) => ({
       pat_gr_id: p.pat_gr_id,
@@ -42,7 +44,7 @@ export default function Home() {
         AMNOG Dashboard
       </h1>
       <p className="text-zinc-500 text-sm mb-8">
-        Datenstand: {data.generated_at.slice(0, 10)} · Quelle: {data.source}
+        Datenstand: {dateStr} · Quelle: {data.source}
       </p>
 
       <section className="mb-8 border border-zinc-200 rounded-xl bg-zinc-50 p-5">
@@ -54,7 +56,7 @@ export default function Home() {
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <a
             href="/amnog_web.json"
-            download
+            download={`amnog_web_${dateStr}.json`}
             className="flex items-start gap-3 rounded-lg border border-zinc-200 bg-white p-4 hover:border-zinc-400 transition-colors"
           >
             <span className="mt-0.5 shrink-0 rounded px-1.5 py-0.5 font-mono text-[10px] font-semibold bg-zinc-800 text-white">
@@ -68,7 +70,7 @@ export default function Home() {
           </a>
           <a
             href="/amnog_flat.csv"
-            download
+            download={`amnog_flat_${dateStr}.csv`}
             className="flex items-start gap-3 rounded-lg border border-zinc-200 bg-white p-4 hover:border-zinc-400 transition-colors"
           >
             <span className="mt-0.5 shrink-0 rounded px-1.5 py-0.5 font-mono text-[10px] font-semibold bg-emerald-700 text-white">
@@ -114,7 +116,7 @@ export default function Home() {
           <span className="font-semibold text-zinc-600">Datenherkunft.</span>{" "}
           Die Beschlussdaten sind amtliche Werke im Sinne von §&nbsp;5 UrhG und unterliegen
           keinem Urheberrechtsschutz. Quelle: Gemeinsamer Bundesausschuss (G-BA). Datenstand:
-          6. Juni 2026. Kein automatisches Update.
+          {dateStr}. Kein automatisches Update.
         </p>
         <p>
           Quellcode:{" "}
